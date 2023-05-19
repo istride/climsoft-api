@@ -36,8 +36,8 @@ setup(
     include_package_data=True,
     package_data={
         "": [
-            "src/climsoft_api/locale/*/LC_MESSAGES/*.po",
-            "src/climsoft_api/locale/*/LC_MESSAGES/*.mo",
+            "locale/*/LC_MESSAGES/*.po",
+            "locale/*/LC_MESSAGES/*.mo",
         ]
     },
     cmdclass={
@@ -49,12 +49,12 @@ setup(
     ],
     data_files=[
         (
-            'climsoft_api/locale/en/LC_MESSAGES',
-            ['src/climsoft_api/locale/en/LC_MESSAGES/climsoft_messages.mo']
+            'locale/en/LC_MESSAGES',
+            ['locale/en/LC_MESSAGES/climsoft_messages.mo']
         ),
         (
-            'climsoft_api/locale/fr/LC_MESSAGES',
-            ['src/climsoft_api/locale/fr/LC_MESSAGES/climsoft_messages.mo']
+            'locale/fr/LC_MESSAGES',
+            ['locale/fr/LC_MESSAGES/climsoft_messages.mo']
         )
     ]
 )

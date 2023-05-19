@@ -1,26 +1,21 @@
 import gettext
 import json
-import os
+from pathlib import Path
 from climsoft_api.utils.response import translate_schema
 import starlette.responses
 from fastapi import Request, Response
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(
-        os.path.abspath(__file__)
-    )
-)
+
+APP_DIR = (Path(__file__) / "../../..").resolve()
 
 
 class LocalizationMiddleware:
     def __init__(
         self,
         domain: str = "climsoft_messages",
-        translation_dir: str = os.path.join(
-            BASE_DIR, "locale"
-        ),
+        translation_dir: str = "locale"
     ):
-        self.translation_dir = translation_dir
+        self.translation_dir = str(APP_DIR / translation_dir)
         self.domain = domain
 
     async def __call__(self, request: Request, call_next):

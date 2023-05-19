@@ -7,6 +7,7 @@ BASE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 
 
 class Settings(BaseSettings):
+
     SECRET_KEY: str = "some-random-unique-secret-key"
     DATABASE_URI: AnyUrl = "mysql+mysqldb://root:password@mariadb/climsoft"
     FILE_STORAGE: str = "disk"
@@ -18,12 +19,17 @@ class Settings(BaseSettings):
     S3_SIGNED_URL_VALIDITY: int = 6
     MOUNT_STATIC: bool = True
     MYSQL_DEFAULT_USER: str = "root"
-    AUTH_ENABLED: bool = True
+    AUTH: bool = True
 
     class Config:
         env_prefix = "CLIMSOFT_"
         case_sensitive = True
         env_file_encoding = "utf-8"
 
+    @classmethod
+    def from_env_vars(cls):
+        settings = cls()
+        settings.AUTH = os.getenv("AUTH", "on") != "off"
+        return settings
 
-settings = Settings()
+settings = Settings.from_env_vars()

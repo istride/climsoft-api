@@ -16,8 +16,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware import Middleware
 from climsoft_api.api.auth import router as auth_router
 from climsoft_api.api.config import router as config_router
-# load controllers
 
+
+logger = logging.getLogger(__name__)
 deployment_configs = load_deployment_configs()
 
 
@@ -33,7 +34,7 @@ def get_app(config=None):
                 name="uploads"
             )
         except PermissionError as e:
-            logging.getLogger(__file__).error(e)
+            logger.error(e)
 
     @app.middleware("http")
     async def db_session_middleware(request: Request, call_next):
@@ -41,7 +42,7 @@ def get_app(config=None):
             request.state.get_session = get_session_local(config)
             response = await call_next(request)
         except Exception as exc:
-            logging.exception(exc)
+            logger.exception(exc)
             return Response("Internal server error", status_code=500)
         return response
 
@@ -65,6 +66,7 @@ def get_app_with_routers():
 
     if deployment_configs:
         for key, config in deployment_configs.items():
+            logger.debug(f"Deployment configuration detected, key={key}")
             dependencies = [Depends(get_authorized_user)]
             climsoft_app = get_app(key)
 
@@ -75,10 +77,12 @@ def get_app_with_routers():
 
             app.mount(f"/{key}", climsoft_app)
     else:
+        logger.debug(f"Deployment configuration not detected")
         climsoft_app = get_app()
-        if settings.AUTH_ENABLED:
+        if settings.AUTH:
             dependencies = [Depends(get_authorized_user)]
         else:
+            logger.debug("Auth not actived")
             dependencies = []
         for r in api_routers:
             climsoft_app.include_router(
@@ -118,7 +122,7 @@ def create_default_user():
                 create_default_clim_user_roles(session)
             except Exception as e:
                 session.rollback()
-                logging.getLogger("ClimsoftLogger").exception(e)
+                logger.exception(e)
             finally:
                 session.close()
     else:
@@ -127,6 +131,6 @@ def create_default_user():
             create_default_clim_user_roles(session)
         except Exception as e:
             session.rollback()
-            logging.getLogger("ClimsoftLogger").exception(e)
+            logger.exception(e)
         finally:
             session.close()

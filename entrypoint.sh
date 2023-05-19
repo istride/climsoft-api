@@ -1,5 +1,8 @@
-#!/bin/sh
-sleep 30
+#!/bin/bash
 
-python initdb.py
-exec $@
+wait-for-it -t ${STARTUP_TIMEOUT:-30} $DB_HOST:$DB_PORT
+if [[ $? == 0 ]]
+then
+   exec $@
+fi
+

@@ -1,41 +1,28 @@
 version: "3"
 
 services:
-  test_climsoft_api:
-    image: climsoft_api:0.1.0
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: test_climsoft_api
-    expose:
-      - "5000"
+      target: dev
     volumes:
-      - ./src:/code/src
-      - ./tests:/code/tests
+      - ./src/climsoft_api:/app/climsoft_api
+      - ./src/opencdms:/app/opencdms
+      - ./tests:/app/tests
     environment:
-      - CLIMSOFT_SECRET_KEY=test_secret_key
-      - CLIMSOFT_DATABASE_URI=mysql+mysqldb://root:password@test_climsoft_db:3306/climsoft
+      AUTH: "off"
+      DB_HOST: db
+      DB_PORT: 3306
+      CLIMSOFT_SECRET_KEY: test_secret_key
+      CLIMSOFT_DATABASE_URI: mysql+mysqldb://root:password@db:3306/climsoft
+      SQLALCHEMY_SILENCE_UBER_WARNING: "1"
     depends_on:
-      - test_climsoft_db
+      - db
     command: ["pytest", "tests/integration", "-s"]
-    networks:
-      - test_climsoft_api_test_network
 
-  test_climsoft_db:
+  db:
     image: mariadb:10.1
-    build:
-      context: .
-      dockerfile: Dockerfile.mariadb
-    container_name: test_climsoft_db
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=climsoft
-    networks:
-      - test_climsoft_api_test_network
-
-networks:
-  test_climsoft_api_test_network:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: climsoft
