@@ -47,6 +47,3 @@ if __name__ == "__main__":
         def username_alphanumeric(cls, v):
             assert v.isalnum(), "must be alphanumeric"
             return v
-
-
-    print(json.dumps(generate_schema_with_validators(UserModel), indent=2))

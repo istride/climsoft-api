@@ -73,7 +73,6 @@ def test_should_update_form_monthly(client: TestClient, get_form_monthly):
         data=json.dumps(updates, default=str),
     )
     response_data = response.json()
-    print(response_data)
     assert response.status_code == 200
     assert response_data["result"][0]["mm_02"] == updates["mm_02"]
 

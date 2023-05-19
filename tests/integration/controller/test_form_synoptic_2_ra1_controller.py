@@ -75,7 +75,6 @@ def test_should_update_form_synoptic_2_ra1(client: TestClient, get_form_synoptic
         data=json.dumps(updates, default=str),
     )
     response_data = response.json()
-    print(response_data)
     assert response.status_code == 200
     assert response_data["result"][0]["flag301"] == updates["flag301"]
 
@@ -96,5 +95,4 @@ def test_should_delete_form_synoptic_2_ra1(client: TestClient, get_form_synoptic
     response = client.get(
         f"/v1/form_synoptic_2_ra1s/{station_id}/{yyyy}/{mm}/{dd}/{hh}",
     )
-    print(response.json())
     assert response.status_code == 404

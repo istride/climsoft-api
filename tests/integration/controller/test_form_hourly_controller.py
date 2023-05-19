@@ -76,8 +76,6 @@ def test_should_update_form_hourly(client: TestClient, get_form_hourly):
     )
     response_data = response.json()
 
-    print(response_data)
-
     assert response.status_code == 200
     assert response_data["result"][0]["hh_01"] == updates["hh_01"]
 
